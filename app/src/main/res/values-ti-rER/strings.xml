@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ቤተ ፈተነ1</string>
+    <string name="hello_message">ሰላም!</string>
+    <string name="ButtonText">መፍትሕ</string>
+    <string name="TextView">ኢድ ኣእተወ</string>
+    <string name="TextView2">ናይ ይሕለፍ ቃል</string>
+    <string name="RadioButton">ናይ ራድዮ መልጎም</string>
+    <string name="CheckBox">ሳንዱቕ ምልክት ይግበሩ</string>
+    <string name="Switch">እዚ እንታይ ይገብር?</string>
+</resources>

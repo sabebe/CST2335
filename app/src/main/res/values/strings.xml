@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="hello_message">Hello World!</string>
+    <string name="ButtonText">I\’m a button</string>
+
+    <string name="TextView">Login</string>
+    <string name="TextView2">Password</string>
+
+    <string name="RadioButton">RadioButton</string>
+
+    <string name="login_button">Login</string>
+    <string name="image_button">Image</string>
+    <string name="switcher">Enable Something</string>
+    <string name="checker">CheckBox</string>
+
+    <string name="dialog_message">Do you want to go back to the previous page?</string>
+    <string name="dialog_title">Quit Page</string>
+    <string name="ok">Yes</string>
+    <string name="cancel">Cancel</string>
+
+</resources>
