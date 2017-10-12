@@ -1,18 +1,16 @@
 package com.example.samuel.androidlabs;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-
-
-public class LoginActivity extends Activity {
+public class LoginActivity extends AppCompatActivity {
     protected static final String ACTIVITY_NAME = "LoginActivity";
     private Button loginButton;
     private static final String PREFERENCE_FILE = "MyPrefsFile";
@@ -33,7 +31,6 @@ public class LoginActivity extends Activity {
                 // The activity will jump to the next activity which is StartActivity;
                 Intent intent = new Intent(LoginActivity.this, StartActivity.class);
                 startActivity(intent);
-
             }
         });
         Log.i(ACTIVITY_NAME, "In onCreate()");

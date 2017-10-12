@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
@@ -15,7 +16,7 @@ import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
-public class ListItemsActivity extends Activity {
+public class ListItemsActivity extends AppCompatActivity {
     protected static final String ACTIVITY_NAME = "ListItemsActivity";
     private ImageButton imageButton;
     static final int REQUEST_IMAGE_CAPTURE = 1;
