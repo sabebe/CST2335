@@ -1,7 +1,11 @@
 package com.example.samuel.androidlabs;
 
-import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,75 +21,125 @@ import java.util.ArrayList;
 
 public class ChatWindow extends AppCompatActivity {
 
-    private ListView list;
-    private EditText editText;
-    private Button send;
-    public ArrayList<String> chatList = new ArrayList<>();
-    protected static final String ACTIVITY_NAME = "ChatActivity";
-    Context ctx;
+    final ArrayList<String> chatArray = new ArrayList<>();
+
+    private ChatDatabaseHelper dbHelper;
+    private SQLiteDatabase database;
+    private String[] allColumns = { ChatDatabaseHelper.KEY_ID,
+            ChatDatabaseHelper.KEY_MESSAGE };
+    private ChatAdapter chatAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_window);
+        dbHelper = new ChatDatabaseHelper(this);
+        database = dbHelper.getWritableDatabase();
+        readMessages();
 
-        list = (ListView) findViewById(R.id.listView1);
-        editText = (EditText) findViewById(R.id.editText3);
-        send = (Button) findViewById(R.id.button4e);
+        final ListView listViewChat = (ListView) findViewById(R.id.listView);
+        chatAdapter = new ChatAdapter(this);
+        listViewChat.setAdapter(chatAdapter);
+        final EditText editTextChat = (EditText) findViewById(R.id.editText);
+        Button buttonSend = (Button) findViewById(R.id.sendButton);
 
-        // set the data source of the listView to be a new ChatAdapter object
-        // in this case, “this” is the ChatWindow, which is-A Context object ChatAdapter
-        final ChatAdapter messageAdapter = new ChatAdapter(this);
-        list.setAdapter(messageAdapter);
-
-        // add a callback handler for your Send button so that whenever the user clicks it,
-        // you get the text in the EditText field, and add it to your array list variable.
-        send.setOnClickListener(new View.OnClickListener() {
+        buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(ACTIVITY_NAME, editText.getText().toString());
-                chatList.add(editText.getText().toString());
-                messageAdapter.notifyDataSetChanged(); //this restarts the process of getCount()/ getView() in the case
-                // someone types something and presses send
-                editText.setText("");// clear the textview so EditText is ready for a new message to be sent
+                String chatString = editTextChat.getText().toString();
+                writeMessages(chatString);
+
+                editTextChat.setText("");
             }
         });
     }
 
-    class ChatAdapter extends ArrayAdapter<String> {
+    private void readMessages() {
+        Cursor cursor = database.query(ChatDatabaseHelper.TABLE_NAME,
+                allColumns, null, null, null, null, null);
 
-        // constructor
-        public ChatAdapter(Context ctx) {
-            super(ctx, 0);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            String message = cursor.getString(cursor.getColumnIndex( ChatDatabaseHelper.KEY_MESSAGE));
+            long id = cursor.getLong(cursor.getColumnIndex(ChatDatabaseHelper.KEY_ID));
+
+            Log.i("Chat Window", "ID: " + cursor.getString( cursor.getColumnIndex(ChatDatabaseHelper.KEY_ID)) + " SQL MESSAGE:" + cursor.getString( cursor.getColumnIndex(ChatDatabaseHelper.KEY_MESSAGE)));
+
+            String data = new String(message);
+
+            chatArray.add(data);
+            cursor.moveToNext();
         }
 
-        // this returns the number of rows that will be in your listView.
-        // In your case, it should be the number of strings in the array list object
+        Log.i("Chat Window", "Cursor’s column count =" + cursor.getColumnCount());
+
+        for(int i = 0; i < cursor.getColumnCount(); i++) {
+            Log.i("Chat Window", "Column Name: " + cursor.getColumnName(i));
+        }
+
+        // close the cursor
+        cursor.close();
+    }
+
+    private void writeMessages(String message) {
+        ContentValues values = new ContentValues();
+
+        values.put(ChatDatabaseHelper.KEY_MESSAGE, message);
+        long id = database.insert(ChatDatabaseHelper.TABLE_NAME, null,
+                values);
+
+        String data = new String(message);
+        chatAdapter.notifyDataSetChanged();
+        chatArray.add(data);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == 5) {
+            Bundle extras = data.getExtras();
+            int id = Integer.parseInt(extras.getString("id"));
+            long dataid = Long.parseLong(extras.getString("dataID"));
+
+            database.delete(ChatDatabaseHelper.TABLE_NAME, "_id=?",
+                    new String[]{Long.toString(dataid)});
+
+            chatArray.remove(id);
+            chatAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private class ChatAdapter extends ArrayAdapter<String> {
+
+        public ChatAdapter(Context context) {
+            super(context, 0);
+        }
+
         public int getCount() {
-            return chatList.size();
+            return chatArray.size();
         }
 
-        // this returns the item to show in the list at the specified position
         public String getItem(int position) {
-            return chatList.get(position);
+            return chatArray.get(position);
         }
 
-        // this returns the layout that will be positioned at the specified position in the list
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = ChatWindow.this.getLayoutInflater();
-
-            // this will recreate your View that you made in the resource file. If the position is an odd number
-            // then inflate chat_row_incoming, else inflate chat_row_outgoing
             View result = null;
-            if (position % 2 == 0) {
-                result = inflater.inflate(R.layout.chat_row_incoming, null);
-            } else {
+            if (position%2 == 0) {
                 result = inflater.inflate(R.layout.chat_row_outgoing, null);
+            } else {
+                result = inflater.inflate(R.layout.chat_row_incoming, null);
             }
-            //​ from the resulting view, get the TextView which holds the string message:
-            TextView message = (TextView) result.findViewById(R.id.message_text);
+
+            TextView message = (TextView) result.findViewById((R.id.message_text));
             message.setText(getItem(position));
             return result;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dbHelper.close();
     }
 }
