@@ -21,4 +21,14 @@
     <string name="ChatButton">Start Chat</string>
     <string name="send_button">Send</string>
 
+    <string name="WeatherButton">Weather Forecast</string>
+    <string name="CurrentTemperature">Current Temperature</string>
+    <string name="MinTemperature">Min Temperature</string>
+    <string name="MaxTemperature">Max Temperature</string>
+
+    <string name="title_activity_test_toolbar">TestToolbar</string>
+    <string name="start_the_toolbar">Start the ToolBar</string>
+    <string name="goBackQuestion">Do you want to go back?</string>
+    <string name="SettingDialogTitle">Simple Dialog</string>
+
 </resources>

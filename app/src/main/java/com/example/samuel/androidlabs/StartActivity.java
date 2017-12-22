@@ -1,6 +1,5 @@
 package com.example.samuel.androidlabs;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,8 +19,8 @@ public class StartActivity extends AppCompatActivity {
         Log.i(ACTIVITY_NAME, "In onCreate()");
         setContentView(R.layout.activity_start);
 
-        startButton =(Button) findViewById(R.id.button);
-        startButton.setOnClickListener(new View.OnClickListener(){
+        startButton = (Button) findViewById(R.id.button);
+        startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(StartActivity.this, ListItemsActivity.class);
@@ -30,12 +29,32 @@ public class StartActivity extends AppCompatActivity {
         });
 
         chatButton = (Button) findViewById(R.id.button3);
-        chatButton.setOnClickListener(new View.OnClickListener(){
+        chatButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 Log.i(ACTIVITY_NAME, "User clicked Start Chat");
                 Intent intent = new Intent(StartActivity.this, ChatWindow.class);
                 startActivity(intent);
+            }
+        });
+
+        Button weatherButton = (Button) findViewById(R.id.button5);
+        weatherButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(ACTIVITY_NAME, "User clicked Weather Button");
+                Intent intent = new Intent(StartActivity.this, WeatherForecast.class);
+                startActivityForResult(intent, 50);
+            }
+        });
+
+        Button toolBarButton = (Button) findViewById(R.id.toolBarButton);
+        toolBarButton.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v){
+            Log.i(ACTIVITY_NAME, "User clicked Toolbar Button");
+            Intent intent = new Intent(StartActivity.this, TestToolbar.class);
+            startActivityForResult(intent, 555);
             }
         });
     }
